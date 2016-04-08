@@ -21,6 +21,6 @@ Project links
 * `Issue tracker`_
 
 .. _asyncio: https://docs.python.org/3/library/asyncio.html
-.. _Documentation: http://asyncio_extras.readthedocs.org/en/latest/
+.. _Documentation: http://pythonhosted.org/asyncio_extras/
 .. _Source code: https://github.com/agronholm/asyncio_extras
 .. _Issue tracker: https://github.com/agronholm/asyncio_extras/issues
