@@ -10,6 +10,7 @@ This library provides several conveniences to users of asyncio_:
 * decorator for making asynchronous generators
 * decorator for making asynchronous context managers (like ``contextlib.contextmanager``)
 * decorator and context manager for running a function or parts of a function in a thread pool
+* helpers for calling functions in the event loop from worker threads and vice versa
 * helpers for doing non-blocking file i/o
 
 

@@ -1,3 +1,4 @@
+import asyncio
 import threading
 from asyncio.futures import Future
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -6,6 +7,7 @@ from threading import current_thread, main_thread
 import pytest
 
 from asyncio_extras import threadpool, call_in_executor
+from asyncio_extras.threads import call_async
 
 
 class TestThreadpool:
@@ -82,3 +84,40 @@ async def test_call_in_executor(executor):
     """Test that call_in_thread actually runs the target in a worker thread."""
     assert not await call_in_executor(lambda: current_thread() is main_thread(),
                                       executor=executor)
+
+
+class TestCallAsync:
+    @pytest.mark.asyncio
+    async def test_call_async_plain(self, event_loop):
+        def runs_in_event_loop(worker_thread, x, y):
+            assert current_thread() is not worker_thread
+            return x + y
+
+        def runs_in_worker_thread():
+            worker_thread = current_thread()
+            return call_async(event_loop, runs_in_event_loop, worker_thread, 1, y=2)
+
+        assert await event_loop.run_in_executor(None, runs_in_worker_thread) == 3
+
+    @pytest.mark.asyncio
+    async def test_call_async_coroutine(self, event_loop):
+        async def runs_in_event_loop(worker_thread, x, y):
+            assert current_thread() is not worker_thread
+            await asyncio.sleep(0.2)
+            return x + y
+
+        def runs_in_worker_thread():
+            worker_thread = current_thread()
+            return call_async(event_loop, runs_in_event_loop, worker_thread, 1, y=2)
+
+        assert await event_loop.run_in_executor(None, runs_in_worker_thread) == 3
+
+    @pytest.mark.asyncio
+    async def test_call_async_exception(self, event_loop):
+        def runs_in_event_loop():
+            raise ValueError('foo')
+
+        with pytest.raises(ValueError) as exc:
+            await event_loop.run_in_executor(None, call_async, event_loop, runs_in_event_loop)
+
+        assert str(exc.value) == 'foo'

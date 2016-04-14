@@ -1,8 +1,10 @@
+import concurrent.futures
 import gc
 import inspect
-from asyncio import get_event_loop, Future
+from asyncio import get_event_loop, Future, AbstractEventLoop
 from concurrent.futures import Executor
 from functools import wraps, partial
+from inspect import isawaitable
 from threading import Event
 from typing import Optional, Callable, Union
 
@@ -115,9 +117,8 @@ def call_in_executor(func: Callable, *args, executor: Executor = None, **kwargs)
 
         get_event_loop().run_in_executor(executor, func, *args)
 
-    There is virtually never a need to use :func:`functools.partial` with this function.
-    The only such case would be if you want to pass a keyword argument ``executor`` to the target
-    callable.
+    If you need to pass keyword arguments named ``func`` or ``executor`` to the callable, use
+    :func:`functools.partial` for that.
 
     :param func: a function
     :param args: positional arguments to call with
@@ -128,3 +129,34 @@ def call_in_executor(func: Callable, *args, executor: Executor = None, **kwargs)
     """
     callback = partial(func, *args, **kwargs)
     return get_event_loop().run_in_executor(executor, callback)
+
+
+def call_async(loop: AbstractEventLoop, func: Callable, *args, **kwargs):
+    """
+    Call the given callable in the event loop thread.
+
+    If the call returns an awaitable, it is resolved before returning to the caller.
+
+    If you need to pass keyword arguments named ``loop`` or ``func`` to the callable, use
+    :func:`functools.partial` for that.
+
+    :param func: a regular function or a coroutine function
+    :param args: positional arguments to call with
+    :param loop: the event loop in which to call the function
+    :param kwargs: keyword arguments to call with
+    :return: the return value of the function call
+
+    """
+    async def callback():
+        try:
+            retval = func(*args, **kwargs)
+            if isawaitable(retval):
+                retval = await retval
+        except BaseException as e:
+            f.set_exception(e)
+        else:
+            f.set_result(retval)
+
+    f = concurrent.futures.Future()
+    loop.call_soon_threadsafe(loop.create_task, callback())
+    return f.result()

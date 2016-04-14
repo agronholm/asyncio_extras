@@ -6,8 +6,10 @@ This library provides some "missing" features for the asyncio (:pep:`3156`) modu
 * decorator for making asynchronous generators
 * decorator for making asynchronous context managers (like :func:`~contextlib.contextmanager`)
 * decorator and context manager for running a function or parts of a function in a thread pool
+* helpers for calling functions in the event loop from worker threads and vice versa
 * helpers for doing non-blocking file i/o
 
+:doc:`versionhistory`
 
 :mod:`asyncio_extras.asyncyield`
 ================================
