@@ -8,7 +8,7 @@ from inspect import isawaitable
 from threading import Event
 from typing import Optional, Callable, Union
 
-__all__ = ('threadpool', 'call_in_executor')
+__all__ = ('threadpool', 'call_in_executor', 'call_async')
 
 
 class _ThreadSwitcher:
