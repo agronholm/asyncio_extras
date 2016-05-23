@@ -9,7 +9,7 @@ setup(
         'local_scheme': 'dirty-tag'
     },
     description='Asynchronous generators, context managers and more for asyncio',
-    long_description=Path(__file__).parent.joinpath('README.rst').open().read(),
+    long_description=Path(__file__).with_name('README.rst').read_text('utf-8'),
     author='Alex Grönholm',
     author_email='alex.gronholm@nextday.fi',
     url='https://github.com/agronholm/asyncio_extras',
