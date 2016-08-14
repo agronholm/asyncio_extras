@@ -5,6 +5,7 @@ from concurrent.futures.thread import ThreadPoolExecutor
 from threading import current_thread, main_thread
 
 import pytest
+import time
 
 from asyncio_extras import threadpool, call_in_executor
 from asyncio_extras.threads import call_async
@@ -76,6 +77,21 @@ class TestThreadpool:
                 await future
 
         assert str(exc.value) == 'attempted to "await" in a worker thread'
+
+    @pytest.mark.asyncio
+    async def test_threadpool_multiple_coroutine(self):
+        """
+        Test that "async with threadpool()" works when there are multiple coroutine objects present
+        for the same coroutine function.
+
+        """
+        async def sleeper():
+            await asyncio.sleep(0.2)
+            async with threadpool():
+                time.sleep(0.3)
+
+        coros = [sleeper() for _ in range(10)]
+        await asyncio.gather(*coros)
 
 
 @pytest.mark.parametrize('executor', [None, ThreadPoolExecutor(1)])

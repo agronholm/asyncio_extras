@@ -12,7 +12,7 @@ __all__ = ('threadpool', 'call_in_executor', 'call_async')
 
 
 class _ThreadSwitcher:
-    __slots__ = 'executor', 'exited', 'event_loop_thread'
+    __slots__ = 'executor', 'exited'
 
     def __init__(self, executor: Optional[Executor]):
         self.executor = executor
@@ -37,7 +37,7 @@ class _ThreadSwitcher:
             # This is run in the event loop thread
             previous_frame = inspect.currentframe().f_back
             coro = next(obj for obj in gc.get_referrers(previous_frame.f_code)
-                        if inspect.iscoroutine(obj))
+                        if inspect.iscoroutine(obj) and obj.cr_frame is previous_frame)
             event = Event()
             loop = get_event_loop()
             future = loop.run_in_executor(self.executor, exec_when_ready)

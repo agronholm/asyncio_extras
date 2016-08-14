@@ -3,6 +3,11 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
+**1.1.2**
+
+- Fixed concurrency issue with ``async with threadpool()`` when more than one coroutine from the
+  same coroutine function is being run
+
 **1.1.1**
 
 - Import ``call_async`` to the ``asyncio_extras`` package namespace (this was missing from the
