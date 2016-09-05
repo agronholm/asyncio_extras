@@ -27,7 +27,7 @@ async def work_coroutine(
     while True:
         try:
             if exception is not None:
-                value = coro.throw(type(exception), exception, exception.__traceback__)
+                value = coro.throw(exception)
             else:
                 value = coro.send(value)
         except StopIteration:
