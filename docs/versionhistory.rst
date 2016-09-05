@@ -3,7 +3,7 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
-**1.1.3**
+**1.1.3** (2016-09-05)
 
 - Fixed error when throwing an exception into an asynchronous generator when using asyncio's debug
   mode
