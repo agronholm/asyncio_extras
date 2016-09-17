@@ -1,11 +1,13 @@
+import inspect
 from collections import Coroutine, AsyncIterator
 from functools import wraps
 from inspect import iscoroutinefunction, isfunction
 from typing import Callable
+from warnings import warn
 
 from asyncio_extras.asyncyield import work_coroutine
 
-__all__ = ('async_generator', 'isasyncgeneratorfunction')
+__all__ = ('async_generator', 'isasyncgenfunction', 'isasyncgeneratorfunction')
 
 
 class _AsyncGeneratorWrapper:
@@ -46,6 +48,9 @@ def async_generator(func: Callable[..., Coroutine]) -> Callable[..., AsyncIterat
             async for sanitized_page in mygenerator(websites):
                 print(sanitized_page)
 
+    .. note:: This decorator has been obsoleted by Python 3.6. When targeting Python 3.6 or above,
+      remove the decorator and use the ``yield`` statement in place of ``await yield_async(...)``.
+
     :param func: a coroutine function
     :return: a callable that returns an async iterator
 
@@ -59,6 +64,14 @@ def async_generator(func: Callable[..., Coroutine]) -> Callable[..., AsyncIterat
     return wrapper
 
 
-def isasyncgeneratorfunction(obj) -> bool:
+def isasyncgenfunction(obj) -> bool:
     """Return ``True`` if the given object is an asynchronous generator function."""
+    if hasattr(inspect, 'isasyncgenfunction') and inspect.isasyncgenfunction(obj):
+        return True
+
     return isfunction(obj) and getattr(obj, '_is_async_generator', False)
+
+
+def isasyncgeneratorfunction(obj) -> bool:
+    warn('This function has been renamed to "isasyncgenfunction"', DeprecationWarning)
+    return isasyncgenfunction(obj)

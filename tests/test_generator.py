@@ -1,7 +1,7 @@
 import pytest
 
 from asyncio_extras.asyncyield import yield_async
-from asyncio_extras.generator import async_generator, isasyncgeneratorfunction
+from asyncio_extras.generator import async_generator, isasyncgenfunction, isasyncgeneratorfunction
 
 
 @pytest.mark.asyncio
@@ -61,9 +61,18 @@ async def test_awaitable_exception(event_loop):
     assert str(values[0]) == 'foo'
 
 
-def test_isasyncgeneratorfunction():
+def test_isasyncgenfunction():
     async def normalfunc():
         pass
 
-    assert not isasyncgeneratorfunction(normalfunc)
-    assert isasyncgeneratorfunction(async_generator(normalfunc))
+    assert not isasyncgenfunction(normalfunc)
+    assert isasyncgenfunction(async_generator(normalfunc))
+
+
+def test_deprecated_isasyncgenfunction():
+    async def normalfunc():
+        pass
+
+    with pytest.warns(DeprecationWarning):
+        assert not isasyncgeneratorfunction(normalfunc)
+        assert isasyncgeneratorfunction(async_generator(normalfunc))
