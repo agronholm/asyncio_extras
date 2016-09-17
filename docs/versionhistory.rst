@@ -11,6 +11,8 @@ This library adheres to `Semantic Versioning <http://semver.org/>`_.
   and above
 - Changed asynchronous generators to use the updated ``__aiter__`` protocol on Python 3.5.2 and
   above
+- Added the ability to asynchronously iterate through ``AsyncFileWrapper`` just like with a regular
+  file object
 
 **1.1.3** (2016-09-05)
 

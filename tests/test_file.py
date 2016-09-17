@@ -52,3 +52,13 @@ async def test_no_contextmanager(testdatafile, testdata):
 
     assert f.closed
     assert data == testdata
+
+
+@pytest.mark.asyncio
+async def test_iteration(testdatafile, testdata):
+    lines = []
+    async for line in open_async(testdatafile, 'rb'):
+        lines.append(line)
+
+    data = b''.join(lines)
+    assert data == testdata

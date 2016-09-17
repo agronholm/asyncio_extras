@@ -1,3 +1,4 @@
+import sys
 from concurrent.futures import Executor
 from pathlib import Path
 from typing import Union, Optional
@@ -63,6 +64,23 @@ class AsyncFileWrapper:
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         self._raw_file.close()
 
+    if sys.version_info < (3, 5, 2):
+        async def __aiter__(self):  # pragma: no cover
+            return self
+    else:
+        def __aiter__(self):
+            return self
+
+    async def __anext__(self):
+        if self._raw_file is None:
+            await self
+
+        line = await self.readline()
+        if line:
+            return line
+        else:
+            raise StopAsyncIteration
+
     @async_generator
     async def async_readchunks(self, size: int):
         """
@@ -90,6 +108,12 @@ def open_async(file: Union[str, Path], *args, executor: Executor = None,
         async def read_file_contents(path: str) -> bytes:
             async with open_async(path, 'rb') as f:
                 return await f.read()
+
+    The file wrapper can also be asynchronously iterated line by line::
+
+        async def read_file_lines(path: str):
+            async for line in open_async(path):
+                print(line)
 
     :param file: the file path to open
     :param args: positional arguments to :func:`open`
