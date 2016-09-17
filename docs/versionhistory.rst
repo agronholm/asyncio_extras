@@ -9,6 +9,8 @@ This library adheres to `Semantic Versioning <http://semver.org/>`_.
   function in the ``inspect`` module in Python 3.6 (the old name still works though)
 - Updated ``isasyncgenfunction`` to recognize native asynchronous generator functions in Python 3.6
   and above
+- Changed asynchronous generators to use the updated ``__aiter__`` protocol on Python 3.5.2 and
+  above
 
 **1.1.3** (2016-09-05)
 

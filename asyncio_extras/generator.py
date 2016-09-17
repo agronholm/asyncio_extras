@@ -1,4 +1,5 @@
 import inspect
+import sys
 from collections import Coroutine, AsyncIterator
 from functools import wraps
 from inspect import iscoroutinefunction, isfunction
@@ -16,8 +17,12 @@ class _AsyncGeneratorWrapper:
     def __init__(self, coroutine: Coroutine):
         self.coroutine = coroutine
 
-    async def __aiter__(self):
-        return self
+    if sys.version_info < (3, 5, 2):
+        async def __aiter__(self):  # pragma: no cover
+            return self
+    else:
+        def __aiter__(self):
+            return self
 
     async def __anext__(self):
         value = await work_coroutine(self.coroutine)
