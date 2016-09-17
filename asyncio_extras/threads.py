@@ -14,7 +14,7 @@ __all__ = ('threadpool', 'call_in_executor', 'call_async')
 class _ThreadSwitcher:
     __slots__ = 'executor', 'exited'
 
-    def __init__(self, executor: Optional[Executor]):
+    def __init__(self, executor: Optional[Executor]) -> None:
         self.executor = executor
         self.exited = False
 

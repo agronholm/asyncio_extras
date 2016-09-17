@@ -1,4 +1,4 @@
-from collections import Coroutine
+from collections.abc import Coroutine
 from typing import Optional
 
 __all__ = ('yield_async',)

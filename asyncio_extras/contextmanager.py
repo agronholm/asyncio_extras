@@ -1,4 +1,4 @@
-from collections import Coroutine
+from collections.abc import Coroutine
 from functools import wraps
 from inspect import iscoroutinefunction
 from typing import Callable
@@ -11,7 +11,7 @@ __all__ = ('async_contextmanager',)
 class _AsyncContextManager:
     __slots__ = 'coroutine'
 
-    def __init__(self, coroutine: Coroutine):
+    def __init__(self, coroutine: Coroutine) -> None:
         self.coroutine = coroutine
 
     async def __aenter__(self):

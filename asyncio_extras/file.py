@@ -1,5 +1,6 @@
 import sys
 from concurrent.futures import Executor
+from io import IOBase  # noqa
 from pathlib import Path
 from typing import Union, Optional
 
@@ -34,11 +35,11 @@ class AsyncFileWrapper:
     __slots__ = ('_open_args', '_open_kwargs', '_executor', '_raw_file', 'flush', 'read',
                  'readline', 'readlines', 'seek', 'truncate', 'write', 'writelines')
 
-    def __init__(self, path: str, args: tuple, kwargs: dict, executor: Optional[Executor]):
+    def __init__(self, path: str, args: tuple, kwargs: dict, executor: Optional[Executor]) -> None:
         self._open_args = (path,) + args
         self._open_kwargs = kwargs
         self._executor = executor
-        self._raw_file = None
+        self._raw_file = None  # type: IOBase
 
     def __getattr__(self, name):
         return getattr(self._raw_file, name)
