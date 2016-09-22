@@ -34,7 +34,7 @@ class _AsyncGeneratorWrapper:
 
 def async_generator(func: Callable[..., Coroutine]) -> Callable[..., AsyncIterator]:
     """
-    Transform a coroutine function into something that works with the ``async for``.
+    Transform a coroutine function into something that works with ``async for``.
 
     Any awaitable yielded by the given coroutine function will be awaited on and the result passed
     back to the coroutine. Any other yielded values will be yielded to the actual consumer of the

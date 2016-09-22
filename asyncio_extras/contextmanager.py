@@ -62,15 +62,16 @@ class _EmulatedAsyncContextManager:
 
 def async_contextmanager(func: Callable[..., generator_types]) -> Callable:
     """
-    Wrap a function into a callable that creates asynchronous context managers.
+    Transform a coroutine function into something that works with ``async with``.
 
-    The coroutine may yield any number of awaitables which are resolved and sent back to the
-    coroutine. To indicate that the setup phase is complete, the coroutine must use
-    :func:`~yield_async` *exactly once* . The rest of the coroutine will then be processed
-    after the context block has been executed. If the context was exited with an exception,
-    this exception will be raised in the coroutine.
+    This is an asynchronous counterpart to :func:`~contextlib.contextmanager`.
+    The wrapped function can either be a native async generator function (``async def`` with
+    ``yield``) or, if your code needs to be compatible with Python 3.5, you can use
+    :func:`~asyncio_extras.asyncyied.yield_async` instead of the native ``yield`` statement.
 
-    For example (Python 3.5 and earlier)::
+    The generator must yield *exactly once*, just like with :func:`~contextlib.contextmanager`.
+
+    Usage in Python 3.5 and earlier::
 
         @async_contextmanager
         async def mycontextmanager(arg):
@@ -90,7 +91,8 @@ def async_contextmanager(func: Callable[..., generator_types]) -> Callable:
             yield context
             await context.teardown()
 
-    :param func: an async generator function or a coroutine function using ``yield_async()``
+    :param func: an async generator function or a coroutine function using
+        :func:`~asyncio_extras.asyncyied.yield_async`
     :return: a callable that can be used with ``async with``
 
     """
