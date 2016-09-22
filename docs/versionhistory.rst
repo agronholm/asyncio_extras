@@ -3,7 +3,7 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
-**1.2.0**
+**1.2.0** (2016-09-23)
 
 - Renamed the ``isasyncgeneratorfunction`` function to ``isasyncgenfunction`` to match the new
   function in the ``inspect`` module in Python 3.6 (the old name still works though)
