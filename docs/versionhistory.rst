@@ -8,7 +8,7 @@ This library adheres to `Semantic Versioning <http://semver.org/>`_.
 - Renamed the ``isasyncgeneratorfunction`` function to ``isasyncgenfunction`` to match the new
   function in the ``inspect`` module in Python 3.6 (the old name still works though)
 - Updated ``isasyncgenfunction`` to recognize native asynchronous generator functions in Python 3.6
-  and above
+- Updated ``async_contextmanager`` to work with native async generator functions in Python 3.6
 - Changed asynchronous generators to use the updated ``__aiter__`` protocol on Python 3.5.2 and
   above
 - Added the ability to asynchronously iterate through ``AsyncFileWrapper`` just like with a regular
