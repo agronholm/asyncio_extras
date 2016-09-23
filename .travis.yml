@@ -15,8 +15,7 @@ deploy:
   user: agronholm
   password:
     secure: NuwdObD6J8KbnOi7+WS5z1iR/v1NCbVkwlwni3Bz+cev9IvQ/zSy6T4vl3yoV2IiyKwxHCarUJi7aLXEn722FoVs19Rnwe5RsbXbiL7H0kkPLIKGdrXnq5zI1v4J2Zr1JLJSvwnq/9bc3uyIcCPWnSuEk76cHQkVv6W19HTeoDJN2T8zh4WltSUzDzJQK8vzKP8S2eZ/PSxZRMKG8uVkeLDcxStjD1nbSi1+iyIWOYV1D6S5y6KY1lonK5F/wvmBq18c0zfcJPpD0sNsYulme6YFc0ksCNDnGQUYbxpRVUBr0mILjMbEHiNxwW9qQpu8GmqVcxLjEzp7QLnHDA2d2rr33r627chggZ2EwgisZVLfsKI/FD0YtTC81nJJCPPG4qh482WCeSKR8efr3ehcasm8xaNyjhUXx6mCN/C9vscEIbQvBeVna38xj1FisywRjyJKDqpgVysJZ9DyxNJ1pSzf6+XGRczw48HcF8xYYOY8IqUGCVGH1m+bZQj6Z54wx6+pPaEkubyZt0GTLGsDCIQCNLAELP4YTkgeN9QcBnqVdQNWuO8nnY+vIImmMUMBelzJtVJcPZ1mlNQgo0raDsjiAj86OZ4+BPlbe2rIYZ4CHEgw5UbE5kTnf6dOIf774Zz2jbfDOxhjEoXUdu0r4A5NvTnE7JUWv6gz3pfmqxU=
-  skip_cleanup: true
+  distributions: sdist bdist_wheel
   on:
     tags: true
-    distributions: sdist bdist_wheel
     repo: agronholm/asyncio_extras
