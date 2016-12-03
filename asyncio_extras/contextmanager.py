@@ -3,24 +3,19 @@ from functools import wraps
 from inspect import iscoroutinefunction
 from typing import Callable, Union
 
-from asyncio_extras.asyncyield import work_coroutine
-
-__all__ = ('async_contextmanager',)
+from async_generator import async_generator, isasyncgenfunction
 
 try:
-    from inspect import isasyncgen, isasyncgenfunction
     from types import AsyncGeneratorType
 
     generator_types = Union[Coroutine, AsyncGeneratorType]
 except ImportError:
-    def isasyncgen(func):
-        return False
-
-    isasyncgenfunction = isasyncgen
     generator_types = Coroutine
 
+__all__ = ('async_contextmanager',)
 
-class _NativeAsyncContextManager:
+
+class _AsyncContextManager:
     __slots__ = 'generator'
 
     def __init__(self, generator) -> None:
@@ -41,25 +36,6 @@ class _NativeAsyncContextManager:
                 raise RuntimeError("async generator didn't stop")
 
 
-class _EmulatedAsyncContextManager:
-    __slots__ = 'coroutine'
-
-    def __init__(self, coroutine: Coroutine) -> None:
-        self.coroutine = coroutine
-
-    async def __aenter__(self):
-        retval = await work_coroutine(self.coroutine)
-        if retval is not None:
-            return retval.value
-        else:
-            raise RuntimeError('coroutine finished without yielding a value')
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
-        retval = await work_coroutine(self.coroutine, exc_val)
-        if retval is not None:
-            raise RuntimeError("async generator didn't stop")
-
-
 def async_contextmanager(func: Callable[..., generator_types]) -> Callable:
     """
     Transform a coroutine function into something that works with ``async with``.
@@ -67,7 +43,7 @@ def async_contextmanager(func: Callable[..., generator_types]) -> Callable:
     This is an asynchronous counterpart to :func:`~contextlib.contextmanager`.
     The wrapped function can either be a native async generator function (``async def`` with
     ``yield``) or, if your code needs to be compatible with Python 3.5, you can use
-    :func:`~asyncio_extras.asyncyied.yield_async` instead of the native ``yield`` statement.
+    :func:`~async_generator.yield_` instead of the native ``yield`` statement.
 
     The generator must yield *exactly once*, just like with :func:`~contextlib.contextmanager`.
 
@@ -76,7 +52,7 @@ def async_contextmanager(func: Callable[..., generator_types]) -> Callable:
         @async_contextmanager
         async def mycontextmanager(arg):
             context = await setup_remote_context(arg)
-            await yield_async(context)
+            await yield_(context)
             await context.teardown()
 
         async def frobnicate(arg):
@@ -92,18 +68,19 @@ def async_contextmanager(func: Callable[..., generator_types]) -> Callable:
             await context.teardown()
 
     :param func: an async generator function or a coroutine function using
-        :func:`~asyncio_extras.asyncyied.yield_async`
+        :func:`~async_generator.yield_`
     :return: a callable that can be used with ``async with``
 
     """
+    if not isasyncgenfunction(func):
+        if iscoroutinefunction(func):
+            func = async_generator(func)
+        else:
+            '"func" must be an async generator function or a coroutine function'
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         generator = func(*args, **kwargs)
-        if isasyncgen(generator):
-            return _NativeAsyncContextManager(generator)
-        else:
-            return _EmulatedAsyncContextManager(generator)
+        return _AsyncContextManager(generator)
 
-    assert isasyncgenfunction(func) or iscoroutinefunction(func),\
-        '"func" must be an async generator function or a coroutine function'
     return wrapper

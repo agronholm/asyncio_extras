@@ -25,5 +25,6 @@ setup(
     license='MIT',
     zip_safe=False,
     packages=['asyncio_extras'],
-    setup_requires=['setuptools_scm >= 1.7.0']
+    setup_requires=['setuptools_scm >= 1.7.0'],
+    install_requires=['async_generator >= 1.3']
 )

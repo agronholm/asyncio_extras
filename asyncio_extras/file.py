@@ -4,8 +4,8 @@ from io import IOBase  # noqa
 from pathlib import Path
 from typing import Union, Optional
 
-from asyncio_extras.asyncyield import yield_async
-from asyncio_extras.generator import async_generator
+from async_generator import async_generator, yield_
+
 from asyncio_extras.threads import threadpool, call_in_executor
 
 __all__ = ('AsyncFileWrapper', 'open_async')
@@ -94,7 +94,7 @@ class AsyncFileWrapper:
         while True:
             data = await self.read(size)
             if data:
-                await yield_async(data)
+                await yield_(data)
             else:
                 return
 

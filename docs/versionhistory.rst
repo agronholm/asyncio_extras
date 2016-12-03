@@ -3,6 +3,12 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
+**1.3.0** (2016-12-03)
+
+- Removed the asynchronous generator implementation in favor of Nathaniel J. Smith's
+  async_generator library. The ``yield_async()``, ``isasyncgenfunction()`` and
+  ``async_generator()`` functions are now deprecated and will be removed in the next major release.
+
 **1.2.0** (2016-09-23)
 
 - Renamed the ``isasyncgeneratorfunction`` function to ``isasyncgenfunction`` to match the new
