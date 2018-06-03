@@ -39,11 +39,23 @@ async def test_async_contextmanager_exception():
             exception = e
 
     exception = None
-    with pytest.raises(Exception):
-        async with dummycontext(2):
-            raise Exception('foo')
+    async with dummycontext(2):
+        raise Exception('foo')
 
     assert str(exception) == 'foo'
+
+
+@pytest.mark.asyncio
+async def test_async_contextmanager_exception_passthrough():
+    @async_contextmanager
+    async def dummycontext():
+        await yield_()
+
+    with pytest.raises(Exception) as exception:
+        async with dummycontext():
+            raise Exception('foo')
+
+    assert exception.match('^foo$')
 
 
 @pytest.mark.asyncio
@@ -69,3 +81,17 @@ async def test_async_contextmanager_extra_yield():
             assert value == 2
 
     assert str(exc.value) == "async generator didn't stop"
+
+
+@pytest.mark.asyncio
+async def test_return_after_yield():
+    @async_contextmanager
+    async def dummycontext(value):
+        try:
+            await yield_(value)
+        except RuntimeError:
+            return
+
+    async with dummycontext(2) as value:
+        assert value == 2
+        raise RuntimeError

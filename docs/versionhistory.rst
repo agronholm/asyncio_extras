@@ -3,6 +3,13 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
+**1.3.1**
+
+- Fixed ``StopAsyncIteration`` exceptions from leaking from async context managers if ``return``
+  is used after ``yield``
+- Fixed exception being reraised from the context block even if it's handled inside the context
+  manager function
+
 **1.3.0** (2016-12-03)
 
 - Removed the asynchronous generator implementation in favor of Nathaniel J. Smith's

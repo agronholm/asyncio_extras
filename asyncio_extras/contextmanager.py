@@ -26,7 +26,12 @@ class _AsyncContextManager:
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_val is not None:
-            await self.generator.athrow(exc_val)
+            try:
+                await self.generator.athrow(exc_val)
+            except StopAsyncIteration:
+                pass
+
+            return True
         else:
             try:
                 await self.generator.asend(None)
