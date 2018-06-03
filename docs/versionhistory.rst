@@ -3,7 +3,7 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
-**1.3.1**
+**1.3.1** (2018-06-03)
 
 - Fixed ``StopAsyncIteration`` exceptions from leaking from async context managers if ``return``
   is used after ``yield``
