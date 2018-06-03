@@ -8,7 +8,7 @@
   :target: https://asyncio-extras.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-  This library provides several conveniences to users of asyncio_:
+This library provides several conveniences to users of asyncio_:
 
 * decorator for making asynchronous context managers (like ``contextlib.contextmanager``)
 * decorator and context manager for running a function or parts of a function in a thread pool
