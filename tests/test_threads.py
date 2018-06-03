@@ -137,3 +137,8 @@ class TestCallAsync:
             await event_loop.run_in_executor(None, call_async, event_loop, runs_in_event_loop)
 
         assert str(exc.value) == 'foo'
+
+    @pytest.mark.asyncio
+    async def test_call_async_from_event_loop_thread(self, event_loop):
+        exc = pytest.raises(RuntimeError, call_async, event_loop, lambda: None)
+        exc.match(r'call_async\(\) must not be called from an event loop thread')

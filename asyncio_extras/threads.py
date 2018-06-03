@@ -156,6 +156,9 @@ def call_async(loop: AbstractEventLoop, func: Callable, *args, **kwargs):
         else:
             f.set_result(retval)
 
+    if _get_running_loop():
+        raise RuntimeError('call_async() must not be called from an event loop thread')
+
     f = concurrent.futures.Future()
     loop.call_soon_threadsafe(loop.create_task, callback())
     return f.result()

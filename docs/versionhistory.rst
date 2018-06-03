@@ -9,6 +9,7 @@ This library adheres to `Semantic Versioning <http://semver.org/>`_.
   is used after ``yield``
 - Fixed exception being reraised from the context block even if it's handled inside the context
   manager function
+- Added safeguard to prevent ``call_async()`` from being called from the event loop thread
 
 **1.3.0** (2016-12-03)
 
