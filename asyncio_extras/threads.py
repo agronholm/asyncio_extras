@@ -1,12 +1,21 @@
 import concurrent.futures
 import gc
 import inspect
-from asyncio import get_event_loop, _get_running_loop, Future, AbstractEventLoop
+from asyncio import get_event_loop, Future, AbstractEventLoop
 from concurrent.futures import Executor
 from functools import wraps, partial
 from inspect import isawaitable
 from threading import Event
 from typing import Optional, Callable, Union
+
+try:
+    from asyncio import _get_running_loop
+except ImportError:
+    def _get_running_loop():
+        try:
+            return get_event_loop()
+        except RuntimeError:
+            return None
 
 __all__ = ('threadpool', 'call_in_executor', 'call_async')
 
@@ -53,13 +62,14 @@ class _ThreadSwitcher:
     def __call__(self, func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
-            loop = _get_running_loop()
-            if loop:
-                callback = partial(func, *args, **kwargs)
-                return loop.run_in_executor(self.executor, callback)
-            else:
+            try:
+                loop = get_event_loop()
+            except RuntimeError:
                 # Event loop not available -- we're in a worker thread
                 return func(*args, **kwargs)
+            else:
+                callback = partial(func, *args, **kwargs)
+                return loop.run_in_executor(self.executor, callback)
 
         assert not inspect.iscoroutinefunction(func), \
             'Cannot wrap coroutine functions to be run in an executor'

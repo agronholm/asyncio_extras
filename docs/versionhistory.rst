@@ -3,6 +3,11 @@ Version history
 
 This library adheres to `Semantic Versioning <http://semver.org/>`_.
 
+**1.3.2** (2018-06-04)
+
+- Fixed regression on older Python 3.5 releases caused by the introduction of
+  ``_get_running_loop()`` calls
+
 **1.3.1** (2018-06-03)
 
 - Fixed ``StopAsyncIteration`` exceptions from leaking from async context managers if ``return``
